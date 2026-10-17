@@ -7,6 +7,7 @@ Jeu 3D de clôture comptable : ramasse les factures dans le bureau et dépose-le
 ## Le jeu
 
 - **Modes** : Partie libre (3 niveaux), Défi du jour (mêmes factures pour tous, seed du jour), Calendrier (un mois = un niveau, avec épreuves bonus)
+- **Pseudo à l'ouverture** : écran « Bienvenue à la Compta 👋 » dès le premier lancement (pseudo + service, min. 2 caractères) ; « Jouer sans pseudo » possible ; modifiable dans le menu. Le classement s'appelle **🏆 Hall of Fame**
 - **⚔️ Défier un collègue** : en fin de partie, envoie un lien du type « J'ai fait 6 650 pts… à toi de me battre ! » — le défié joue exactement les mêmes factures
 - **🧮 Épreuves bonus** : Rapprochement facture/bon de commande, Chasse au doublon, Taux de TVA
 - **🔁 Transfert de progression** : QR code + lien (ou copie manuelle sur PC) pour récupérer sur un autre appareil ton pseudo, grade, XP, tenues, succès et étoiles — les records des deux appareils sont fusionnés et tu gardes ta place au classement. Le lien est un instantané : recrée-le après de nouvelles parties, et garde-le pour toi
@@ -49,10 +50,11 @@ Moteur : **three.js r147** (intégré au fichier), police Fredoka (Google Fonts,
 
 ---
 
-*Version affichée dans le menu : « Version 13 · 17/10/2026 ».*
+*Version affichée dans le menu : « Version 14 · 17/10/2026 ».*
 
 Historique des versions :
 
+- **v14** — Écran de bienvenue à l'ouverture (pseudo + service demandés, au lieu de se perdre dans le menu), classement renommé « 🏆 Hall of Fame »
 - **v13** — Transfert de progression (QR code, lien 418 caractères, import manuel sur PC), fusion des records
 - **v12** — Mise en page téléphone en paysage, manettes (Xbox / PlayStation / générique)
 - **v11** — numéro de version affiché en bas du menu, mis à jour à chaque livraison
