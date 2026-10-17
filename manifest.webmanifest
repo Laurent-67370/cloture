@@ -1,0 +1,46 @@
+{
+ "name": "La clôture de fin de mois",
+ "short_name": "La Clôture",
+ "description": "Jeu 3D : ramasse les factures et dépose-les à la Compta avant 18h00.",
+ "lang": "fr",
+ "start_url": "/index.html",
+ "scope": "/",
+ "id": "/",
+ "display": "fullscreen",
+ "display_override": [
+  "fullscreen",
+  "standalone"
+ ],
+ "orientation": "any",
+ "background_color": "#bfe6ff",
+ "theme_color": "#bfe6ff",
+ "categories": [
+  "games"
+ ],
+ "icons": [
+  {
+   "src": "icon-192.png",
+   "sizes": "192x192",
+   "type": "image/png",
+   "purpose": "any"
+  },
+  {
+   "src": "icon-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "any"
+  },
+  {
+   "src": "icon-maskable-192.png",
+   "sizes": "192x192",
+   "type": "image/png",
+   "purpose": "maskable"
+  },
+  {
+   "src": "icon-maskable-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "maskable"
+  }
+ ]
+}

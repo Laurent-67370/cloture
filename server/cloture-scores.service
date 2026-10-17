@@ -1,0 +1,18 @@
+[Unit]
+Description=Classement de La cloture de fin de mois
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/cloture-scores
+ExecStart=/usr/bin/node /opt/cloture-scores/server.js
+Environment=PORT=3220
+Environment=DATA_FILE=/opt/cloture-scores/data.json
+Environment=ALLOWED_ORIGINS=*
+Restart=always
+RestartSec=3
+User=www-data
+Group=www-data
+
+[Install]
+WantedBy=multi-user.target
