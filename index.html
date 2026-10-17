@@ -321,6 +321,9 @@ button{font-family:var(--f)}
 .ximp{display:grid;gap:6px;margin:4px 0 12px;padding:10px;border-radius:12px;border:1.5px dashed var(--muted);background:#fff}
 .ximp b{font-size:14px}.ximp textarea{font:inherit;font-size:13px;padding:8px;border-radius:10px;border:2px solid rgba(43,34,64,.6);resize:vertical;min-height:44px}
 .xwarn{font-size:14px!important;padding:8px 10px;border-radius:10px;background:#fff3c4;border:1.5px solid rgba(43,34,64,.4)}
+.nerr{color:#c0392b;font-weight:600;font-size:14px!important;margin:-4px 0 10px!important}
+.linkbtn{display:block;margin:12px auto 0;background:none;border:0;color:var(--muted);font:inherit;font-size:13.5px;text-decoration:underline;cursor:pointer;padding:4px}
+.pseudo input.need{border-color:#e0393e;box-shadow:0 0 0 3px rgba(224,57,62,.2)}
 </style>
 <div id="stage"></div>
 <div class="vign"></div>
@@ -363,8 +366,17 @@ button{font-family:var(--f)}
     <div class="helprow"><button class="hbtn" id="bxfer">🔁 Transférer ma progression</button></div>
     <div class="board card" id="board"><div class="btabs" role="tablist"><button class="btab" data-t="j">Joueurs</button><button class="btab" data-t="s">Services · semaine</button><button class="btab" data-t="m">Mes records</button></div><div class="bhead"><b id="btitle">Classement</b><span id="bsub"></span></div><ol id="blist"></ol><p class="bnote" id="bnote"></p></div>
     <p class="how">Pouce à gauche ou ZQSD pour courir · ⚡ sprint (Espace) · 🎯 lancer dans le bac (E) · touche le sol pour y aller · 🎮 manette compatible</p>
-    <p class="ver">Version 13 · 17/10/2026</p>
+    <p class="ver">Version 14 · 17/10/2026</p>
   </div>
+</div>
+<div class="screen" id="namescr" hidden>
+  <div class="panel card"><p class="eyebrow">Bienvenue à la Compta 👋</p><h1>Comment t’appelles-tu&nbsp;?</h1>
+    <p>Ton pseudo s’affichera dans le <b>Hall of Fame</b> des meilleurs scores et sur les défis que tu envoies à tes collègues.</p>
+    <label class="pseudo" for="npseudo"><span>Ton pseudo</span><input id="npseudo" maxlength="16" autocomplete="nickname" enterkeyhint="done" placeholder="ex. Lolo la Compta"></label>
+    <label class="pseudo" for="nsvc"><span>Ton service</span><select id="nsvc"></select></label>
+    <p class="nerr" id="nerr" hidden>Choisis un pseudo d’au moins 2 caractères.</p>
+    <button class="cta" id="bnameok">Valider</button>
+    <button class="linkbtn" id="bnameskip">Jouer sans pseudo (tes scores ne seront pas classés à ton nom)</button></div>
 </div>
 <div class="screen" id="helpscr" hidden>
   <div class="panel card"><p class="eyebrow">Comment jouer</p><h1>Ta mission</h1>
@@ -7493,7 +7505,7 @@ function renderBoard(){const L=LEVELS[game.level],dkey=todayKey().split('-').rev
     $g('bnote').textContent='Chaque partie jouée ajoute ses points à ton service. Remise à zéro chaque lundi.';
     svcRows.slice(0,8).forEach((r,i)=>{const li=document.createElement('li');if(r.me)li.className='me';const a=document.createElement('span');a.className='r';a.textContent=(i+1)+'.';
       const b=document.createElement('span');b.className='n';b.textContent=r.s+' ('+r.n+')';const c=document.createElement('span');c.className='t';c.textContent=r.t.toLocaleString('fr-FR')+' pts';li.append(a,b,c);ol.appendChild(li);});return;}
-  $g('ddate').textContent=dkey;$g('btitle').textContent=game.mode==='defi'?('Défi du '+dkey):'Meilleurs scores';$g('bsub').textContent=isMonth(game.level)?(L.name+' · '+L.tag):'Niveau '+L.name;
+  $g('ddate').textContent=dkey;$g('btitle').textContent=game.mode==='defi'?('Défi du '+dkey):'🏆 Hall of Fame';$g('bsub').textContent=isMonth(game.level)?(L.name+' · '+L.tag):'Niveau '+L.name;
   const ol=$g('blist');ol.innerHTML='';const f=fieldKey(game.mode,game.level);
   if(!DB&&!API){$g('bnote').textContent='Classement en ligne indisponible pour l’instant (pas de connexion). Tes records restent dans « Mes records ».';return;}
   if(!boardRows.length){$g('bnote').textContent=game.mode==='defi'?'Personne n’a encore joué le défi du jour. À toi de jouer !':'Aucun score enregistré pour l’instant. Sois le premier !';return;}
@@ -7882,7 +7894,7 @@ async function prepImport(code){try{code=String(code).trim();const m=code.match(
     ximp=cleanImport(JSON.parse(await unzip(code)));}
   catch(e){ximp=null;toast('Code de transfert illisible','bad',2200);return false;}
   $g('ximptxt').innerHTML='<b>'+escH(ximp.ps||'Joueur sans pseudo')+'</b> · '+escH(GRADES[gradeOf(ximp.p.xp)][0])+' · '+ximp.p.xp.toLocaleString('fr-FR')+' XP · '+Object.keys(ximp.p.ach).length+' succès · '+Object.values(ximp.p.best).reduce((a,v)=>a+v,0)+' ★'+(ximp.svc?' · '+escH(ximp.svc):'');
-  ['menu','xferscr','helpscr'].forEach(id=>$g(id).hidden=true);$g('ximpscr').hidden=false;$g('bximpok').focus();return true;}
+  ['menu','xferscr','helpscr','namescr'].forEach(id=>$g(id).hidden=true);nameNext=null;$g('ximpscr').hidden=false;$g('bximpok').focus();return true;}
 $g('bximp').onclick=()=>prepImport($g('xin').value);
 $g('bximpno').onclick=()=>{ximp=null;$g('ximpscr').hidden=true;$g('menu').hidden=false;};
 $g('bximpok').onclick=()=>{if(!ximp)return;const x=ximp;ximp=null;
@@ -7895,11 +7907,32 @@ $g('bximpok').onclick=()=>{if(!ximp)return;const x=ximp;ximp=null;
   $g('ximpscr').hidden=true;$g('menu').hidden=false;$g('helpscr').hidden=true;toast('Progression récupérée ! 🎉','good',2400);burst(pos.x,1.5,pos.z,50,1.2);};
 try{const t=new URLSearchParams(location.search).get('t');if(t){try{history.replaceState(null,'',location.pathname);}catch(e){}setTimeout(()=>prepImport(t),300);}}catch(e){}
 
+// ===================== PSEUDO DÈS LE DÉBUT =====================
+const noPseudoOk=()=>{try{return localStorage.getItem('cloture-sanspseudo')==='1';}catch(e){return false;}};
+let nameNext=null;
+{const sel=$g('nsvc');const o0=document.createElement('option');o0.value='';o0.textContent='— choisir —';sel.appendChild(o0);SERVICES.forEach(n=>{const o=document.createElement('option');o.value=n;o.textContent=n;sel.appendChild(o);});}
+function openName(next){nameNext=next||null;$g('npseudo').value=getPseudo();$g('nsvc').value=getSvc();$g('nerr').hidden=true;$g('npseudo').classList.remove('need');
+  ['menu','helpscr','endscr'].forEach(id=>$g(id).hidden=true);$g('namescr').hidden=false;setTimeout(()=>{try{$g('npseudo').focus();}catch(e){}},50);}
+function nameDone(){const nx=nameNext;nameNext=null;$g('namescr').hidden=true;if(nx)nx();else $g('menu').hidden=false;}
+$g('bnameok').onclick=()=>{const v=$g('npseudo').value.replace(/\s+/g,' ').trim().slice(0,16);
+  if(v.length<2){$g('nerr').hidden=false;$g('npseudo').classList.add('need');$g('npseudo').focus();SND.full();return;}
+  $g('pseudo').value=v;$g('svc').value=$g('nsvc').value;try{localStorage.setItem('cloture-pseudo',v);localStorage.setItem('cloture-service',$g('nsvc').value);localStorage.removeItem('cloture-sanspseudo');}catch(e){}
+  sfx([[660,.06],[990,.1,.06]],'triangle',.07);toast('Bienvenue '+v+' !','good',1600);nameDone();};
+$g('bnameskip').onclick=()=>{try{localStorage.setItem('cloture-sanspseudo','1');}catch(e){}nameDone();};
+$g('npseudo').addEventListener('keydown',e=>{e.stopPropagation();if(e.key==='Enter'){e.preventDefault();$g('bnameok').click();}});
+$g('npseudo').addEventListener('input',()=>{$g('nerr').hidden=true;$g('npseudo').classList.remove('need');});
+// avant de jouer : pas de pseudo → on le demande (une fois « jouer sans pseudo » choisi, on ne redemande plus)
+const needName=()=>!getPseudo()&&!noPseudoOk();
+$g('bstart').onclick=()=>{endTuto();if(needName()){openName(()=>startGame());return;}startGame();};
+{const f=$g('bduel').onclick;$g('bduel').onclick=()=>{if(needName()){openName(()=>{$g('menu').hidden=false;f();});return;}f();};}
+// le pseudo modifié dans le menu est aussi mémorisé
+$g('pseudo').addEventListener('change',()=>{try{localStorage.setItem('cloture-pseudo',getPseudo());}catch(e){}});
+
 $g('bhelptuto').onclick=startTuto;$g('bskip').onclick=()=>{try{localStorage.setItem('cloture-tuto','1');}catch(e){}showMenu();};
 $g('bhelp').onclick=()=>{$g('menu').hidden=true;$g('helpscr').hidden=false;$g('bhelpclose').focus();};
 $g('bhelpclose').onclick=()=>{try{localStorage.setItem('cloture-aide','1');}catch(e){}$g('helpscr').hidden=true;$g('menu').hidden=false;};
 $g('btutoplay').onclick=()=>{endTuto();$g('tutoend').hidden=true;startGame();};$g('btutomenu').onclick=showMenu;
-{let seen=null,tdone=null;try{seen=localStorage.getItem('cloture-aide');tdone=localStorage.getItem('cloture-tuto');}catch(e){}if(!tdone)$g('btuto').classList.add('new');if(!seen){$g('menu').hidden=true;$g('helpscr').hidden=false;}}
+{let seen=null,tdone=null;try{seen=localStorage.getItem('cloture-aide');tdone=localStorage.getItem('cloture-tuto');}catch(e){}if(!tdone)$g('btuto').classList.add('new');if(needName()){openName(seen?null:()=>{$g('helpscr').hidden=false;});}else if(!seen){$g('menu').hidden=true;$g('helpscr').hidden=false;}}
 $g('bmenu').onclick=showMenu;$g('bpause').onclick=togglePause;$g('bresume').onclick=togglePause;$g('bquit').onclick=showMenu;
 $g('bsound').onclick=e=>{soundOn=!soundOn;if(!soundOn)stopMusic();else if(game.state==='play')startMusic();e.currentTarget.setAttribute('aria-pressed',soundOn);e.currentTarget.textContent=soundOn?'Son':'Muet';};
 
