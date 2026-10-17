@@ -10,7 +10,7 @@ Jeu 3D de clôture comptable : ramasse les factures dans le bureau et dépose-le
 - **Pseudo à l'ouverture** : écran « Bienvenue à la Compta 👋 » dès le premier lancement (pseudo + service, min. 2 caractères) ; « Jouer sans pseudo » possible ; modifiable dans le menu. Le classement s'appelle **🏆 Hall of Fame**
 - **⚔️ Défier un collègue** : en fin de partie, envoie un lien du type « J'ai fait 6 650 pts… à toi de me battre ! » — le défié joue exactement les mêmes factures
 - **🧮 Épreuves bonus** : Rapprochement facture/bon de commande, Chasse au doublon, Taux de TVA
-- **🔁 Transfert de progression** : QR code + lien (ou copie manuelle sur PC) pour récupérer sur un autre appareil ton pseudo, grade, XP, tenues, succès et étoiles — les records des deux appareils sont fusionnés et tu gardes ta place au classement. Le lien est un instantané : recrée-le après de nouvelles parties, et garde-le pour toi
+- **🔁 Transfert de progression** : QR code + **code court de 6 caractères** (ex. `GH7-SYL`) valable **7 jours** sur le serveur — le lien devient `https://cloture.lhusser.fr/?x=XXXXXX`, tapable à la main sur PC (majuscules/tiret/espace acceptés, ni 0 ni 1 ni O ni I pour éviter la confusion). Récupère sur un autre appareil ton pseudo, grade, XP, tenues, succès et étoiles — les records des deux appareils sont fusionnés et tu gardes ta place au classement. Sans connexion, le jeu reprend l'ancien lien long. Le code sert à retrouver ta progression : garde-le pour toi
 - **PWA installable** : bouton 📲 sur l'écran titre, plein écran, fonctionne sans réseau (service worker, cache `cloture-v2` ; le générer de QR code est intégré, donc le transfert marche aussi hors ligne)
 - **Manette** : Xbox / PlayStation / générique en Bluetooth ou USB — menus et partie
 - Compatible clavier/souris, tactile, et manette
@@ -50,10 +50,11 @@ Moteur : **three.js r147** (intégré au fichier), police Fredoka (Google Fonts,
 
 ---
 
-*Version affichée dans le menu : « Version 14 · 17/10/2026 ».*
+*Version affichée dans le menu : « Version 15 · 17/10/2026 ».*
 
 Historique des versions :
 
+- **v15** — Codes courts de transfert (6 caractères, 7 jours, serveur `/xfer`), QR simplifié, import manuel PC ; server.js : endpoint `/xfer` (POST dépôt, GET lecture), purge auto
 - **v14** — Écran de bienvenue à l'ouverture (pseudo + service demandés, au lieu de se perdre dans le menu), classement renommé « 🏆 Hall of Fame »
 - **v13** — Transfert de progression (QR code, lien 418 caractères, import manuel sur PC), fusion des records
 - **v12** — Mise en page téléphone en paysage, manettes (Xbox / PlayStation / générique)
