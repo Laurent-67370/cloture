@@ -324,6 +324,9 @@ button{font-family:var(--f)}
 .nerr{color:#c0392b;font-weight:600;font-size:14px!important;margin:-4px 0 10px!important}
 .linkbtn{display:block;margin:12px auto 0;background:none;border:0;color:var(--muted);font:inherit;font-size:13.5px;text-decoration:underline;cursor:pointer;padding:4px}
 .pseudo input.need{border-color:#e0393e;box-shadow:0 0 0 3px rgba(224,57,62,.2)}
+.xcodebox{display:flex;flex-direction:column;align-items:center;margin:10px 0 0!important;padding:8px 18px;border-radius:14px;background:#fff7dc;border:2px solid rgba(43,34,64,.85)}
+.xcodebox span{font-size:11px!important;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.xcodebox b{font-size:34px;letter-spacing:.12em;font-variant-numeric:tabular-nums;line-height:1.1}.xcodebox small{font-size:12px;color:var(--muted)}
 </style>
 <div id="stage"></div>
 <div class="vign"></div>
@@ -366,7 +369,7 @@ button{font-family:var(--f)}
     <div class="helprow"><button class="hbtn" id="bxfer">🔁 Transférer ma progression</button></div>
     <div class="board card" id="board"><div class="btabs" role="tablist"><button class="btab" data-t="j">Joueurs</button><button class="btab" data-t="s">Services · semaine</button><button class="btab" data-t="m">Mes records</button></div><div class="bhead"><b id="btitle">Classement</b><span id="bsub"></span></div><ol id="blist"></ol><p class="bnote" id="bnote"></p></div>
     <p class="how">Pouce à gauche ou ZQSD pour courir · ⚡ sprint (Espace) · 🎯 lancer dans le bac (E) · touche le sol pour y aller · 🎮 manette compatible</p>
-    <p class="ver">Version 14 · 17/10/2026</p>
+    <p class="ver">Version 15 · 17/10/2026</p>
   </div>
 </div>
 <div class="screen" id="namescr" hidden>
@@ -418,11 +421,11 @@ button{font-family:var(--f)}
 <div class="screen" id="xferscr" hidden>
   <div class="panel card"><p class="eyebrow">Changer d’appareil</p><h1>Transférer ma progression</h1>
     <p>Sur ton autre téléphone ou ordinateur, <b>scanne ce QR code</b> avec l’appareil photo ou <b>ouvre le lien</b> : ton grade, tes tenues, tes succès, tes records et ton nom au classement y seront recopiés.</p>
-    <div class="qrbox"><div id="xqr" aria-label="QR code de transfert"></div><p class="xsum" id="xsum"></p></div>
+    <div class="qrbox"><div id="xqr" aria-label="QR code de transfert"></div><p class="xcodebox" id="xcodebox" hidden><span>Code</span><b id="xcode"></b><small>valable 7 jours · à taper sur l’autre appareil</small></p><p class="xsum" id="xsum"></p></div>
     <div class="row xrow"><button class="cta" id="bxcopy">📋 Copier le lien</button><button class="cta ghost" id="bxshare">📤 Envoyer</button></div>
     <input class="sharelink" id="xlink" readonly hidden aria-label="Lien de transfert">
-    <p class="xnote">Le lien contient ta progression à cet instant : refais-en un après de nouvelles parties. Garde-le pour toi, il permet de jouer sous ton nom.</p>
-    <div class="ximp"><b>Tu as reçu un lien ou un code ?</b><textarea id="xin" rows="2" placeholder="Colle-le ici"></textarea><button class="hbtn" id="bximp">Importer</button></div>
+    <p class="xnote">Le code et le lien recopient ta progression à cet instant : refais-en un après de nouvelles parties. Garde-les pour toi, ils permettent de jouer sous ton nom.</p>
+    <div class="ximp"><b>Tu as reçu un lien ou un code ?</b><textarea id="xin" rows="2" placeholder="Colle le lien ou tape le code (ex. K7P-4QX)"></textarea><button class="hbtn" id="bximp">Importer</button></div>
     <button class="cta ghost" id="bxclose">Fermer</button></div>
 </div>
 <div class="screen" id="ximpscr" hidden>
@@ -7868,7 +7871,9 @@ function xferPayload(){const R=loadRecs(),r={};for(const k in R){if(k==='_last'|
   return {v:1,id,ps:getPseudo(),svc:getSvc(),p:P,r};}
 let xferUrl='';
 async function openXfer(){$g('menu').hidden=true;$g('xferscr').hidden=false;$g('xlink').hidden=true;$g('xin').value='';const box=$g('xqr');box.innerHTML='<span style="font-size:14px;line-height:1.4">Préparation…</span>';
-  const pl=xferPayload();const code=await zip(JSON.stringify(pl));xferUrl=SHARE_URL+'?t='+code;
+  const pl=xferPayload();const code=await zip(JSON.stringify(pl));xferUrl=SHARE_URL+'?t='+code;$g('xcodebox').hidden=true;
+  try{const r=await fetch(API_URL+'/xfer',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({c:code})});
+    if(r.ok){const j=await r.json();if(/^[A-Z0-9]{6}$/.test(j.code)){xferUrl=SHARE_URL+'?x='+j.code;$g('xcode').textContent=j.code.slice(0,3)+'-'+j.code.slice(3);$g('xcodebox').hidden=false;}}}catch(e){}
   $g('xsum').textContent=(pl.ps||'Sans pseudo')+' · '+GRADES[gradeOf(P.xp)][0]+' · '+P.xp.toLocaleString('fr-FR')+' XP · '+Object.keys(P.ach).length+' succès · '+starsTotal()+' ★';
   try{if(typeof qrcode!=='function')throw 0;const q=qrcode(0,'L');q.addData(xferUrl);q.make();box.innerHTML=q.createSvgTag({cellSize:4,margin:2,scalable:true});}
   catch(e){box.innerHTML='<span style="font-size:14px;line-height:1.4">QR code indisponible : utilise « Copier le lien ».</span>';}
@@ -7890,7 +7895,10 @@ function cleanImport(o){if(!o||o.v!==1||typeof o.p!=='object'||!o.p)throw 0;cons
   const r={};for(const k in (o.r||{})){if(!/^(ps|pd)_[a-z0-9_]{1,24}$/.test(k)||!Array.isArray(o.r[k]))continue;r[k]=o.r[k].slice(0,10).map(a=>({s:Math.max(0,Math.min(60000,Math.round(+a[0])||0)),d:+a[1]||Date.now(),w:a[2]?1:0,st:Math.max(0,Math.min(3,+a[3]||0)),ps:''})).filter(e=>e.s>0);}
   const id=typeof o.id==='string'&&/^[a-z0-9]{6,40}$/i.test(o.id)?o.id:null;
   return {id,ps:String(o.ps||'').replace(/\s+/g,' ').trim().slice(0,16),svc:SERVICES.includes(o.svc)?o.svc:'',p,r};}
-async function prepImport(code){try{code=String(code).trim();const m=code.match(/[?&]t=([A-Za-z0-9_-]+)/);if(m)code=m[1];if(!/^[jz][A-Za-z0-9_-]{10,}$/.test(code))throw 0;
+async function prepImport(code){try{code=String(code).trim();const m=code.match(/[?&]t=([A-Za-z0-9_-]+)/);if(m)code=m[1];
+    if(!m){const mx=code.match(/[?&]x=([A-Za-z0-9-]+)/);const sc=(mx?mx[1]:code).toUpperCase().replace(/[^A-Z0-9]/g,'');
+      if(sc.length===6){let r;try{r=await fetch(API_URL+'/xfer?code='+sc,{cache:'no-store'});}catch(e){toast('Connexion nécessaire pour utiliser un code','bad',2600);return false;}
+        if(r.status===404){toast('Code inconnu ou expiré (7 jours)','bad',2600);return false;}if(!r.ok)throw 0;code=String((await r.json()).c||'');}}if(!/^[jz][A-Za-z0-9_-]{10,}$/.test(code))throw 0;
     ximp=cleanImport(JSON.parse(await unzip(code)));}
   catch(e){ximp=null;toast('Code de transfert illisible','bad',2200);return false;}
   $g('ximptxt').innerHTML='<b>'+escH(ximp.ps||'Joueur sans pseudo')+'</b> · '+escH(GRADES[gradeOf(ximp.p.xp)][0])+' · '+ximp.p.xp.toLocaleString('fr-FR')+' XP · '+Object.keys(ximp.p.ach).length+' succès · '+Object.values(ximp.p.best).reduce((a,v)=>a+v,0)+' ★'+(ximp.svc?' · '+escH(ximp.svc):'');
@@ -7905,7 +7913,7 @@ $g('bximpok').onclick=()=>{if(!ximp)return;const x=ximp;ximp=null;
   if(x.id&&API)UID=x.id;if(x.ps)$g('pseudo').value=x.ps;if(x.svc)$g('svc').value=x.svc;
   applyOutfit();renderCareer();renderLevels();renderBoard();if(API)apiRefresh();
   $g('ximpscr').hidden=true;$g('menu').hidden=false;$g('helpscr').hidden=true;toast('Progression récupérée ! 🎉','good',2400);burst(pos.x,1.5,pos.z,50,1.2);};
-try{const t=new URLSearchParams(location.search).get('t');if(t){try{history.replaceState(null,'',location.pathname);}catch(e){}setTimeout(()=>prepImport(t),300);}}catch(e){}
+try{const q=new URLSearchParams(location.search),t=q.get('t'),x=q.get('x');if(t||x){try{history.replaceState(null,'',location.pathname);}catch(e){}setTimeout(()=>prepImport(t||('?x='+x)),300);}}catch(e){}
 
 // ===================== PSEUDO DÈS LE DÉBUT =====================
 const noPseudoOk=()=>{try{return localStorage.getItem('cloture-sanspseudo')==='1';}catch(e){return false;}};

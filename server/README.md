@@ -37,6 +37,8 @@ Si tu choisis un autre nom de domaine, change la ligne `const API_URL='https://c
 | GET | `/scores?key=ps_normal&limit=20` | meilleurs scores d'un niveau (`ps_facile`, `ps_normal`, `ps_expert`, `ps_m1`…`ps_m12`, défi du jour `pd_AAAAMMJJ_niveau`) |
 | GET | `/services?week=w_AAAASS` | points cumulés par service pour une semaine ISO |
 | POST | `/score` | `{id, pseudo, svc, pts, keys:[…]}` : garde le meilleur score par clé et ajoute `pts` au cumul hebdomadaire du joueur |
+| POST | `/xfer` | `{c}` : dépose une progression compressée (transfert entre appareils) et renvoie un code court `{code:"K7P4QX", exp}` valable 7 jours |
+| GET | `/xfer?code=K7P4QX` | renvoie la progression déposée `{c}` (404 si code inconnu ou expiré) |
 
 ## Protections
 
