@@ -9,7 +9,8 @@ Jeu 3D de clôture comptable : ramasse les factures dans le bureau et dépose-le
 - **Modes** : Partie libre (3 niveaux), Défi du jour (mêmes factures pour tous, seed du jour), Calendrier (un mois = un niveau, avec épreuves bonus)
 - **⚔️ Défier un collègue** : en fin de partie, envoie un lien du type « J'ai fait 6 650 pts… à toi de me battre ! » — le défié joue exactement les mêmes factures
 - **🧮 Épreuves bonus** : Rapprochement facture/bon de commande, Chasse au doublon, Taux de TVA
-- **PWA installable** : bouton 📲 sur l'écran titre, plein écran, fonctionne sans réseau (service worker, cache `cloture-v2`)
+- **🔁 Transfert de progression** : QR code + lien (ou copie manuelle sur PC) pour récupérer sur un autre appareil ton pseudo, grade, XP, tenues, succès et étoiles — les records des deux appareils sont fusionnés et tu gardes ta place au classement. Le lien est un instantané : recrée-le après de nouvelles parties, et garde-le pour toi
+- **PWA installable** : bouton 📲 sur l'écran titre, plein écran, fonctionne sans réseau (service worker, cache `cloture-v2` ; le générer de QR code est intégré, donc le transfert marche aussi hors ligne)
 - **Manette** : Xbox / PlayStation / générique en Bluetooth ou USB — menus et partie
 - Compatible clavier/souris, tactile, et manette
 
@@ -17,7 +18,7 @@ Jeu 3D de clôture comptable : ramasse les factures dans le bureau et dépose-le
 
 | Fichier | Rôle |
 |---|---|
-| `index.html` | Le jeu complet : moteur three.js contrôles géométrie ombres éclairage + police Fredoka intégrés (≈ 1,09 Mo) |
+| `index.html` | Le jeu complet : moteur three.js contrôles géométrie ombres éclairage + police Fredoka + générateur de QR code intégrés (≈ 1,15 Mo) |
 | `manifest.webmanifest` | Manifeste PWA (`start_url` absolu — requis pour l'installation Android/WebAPK) |
 | `sw.js` | Service worker (cache `cloture-v2`, 9 fichiers, classement jamais mis en cache) |
 | `icon-*.png`, `apple-touch-icon.png`, `favicon-32.png` | Icônes (feuille de facture + tampon € rouge) |
@@ -48,4 +49,12 @@ Moteur : **three.js r147** (intégré au fichier), police Fredoka (Google Fonts,
 
 ---
 
-*Version affichée dans le menu : « Version 12 · 17/10/2026 ».*
+*Version affichée dans le menu : « Version 13 · 17/10/2026 ».*
+
+Historique des versions :
+
+- **v13** — Transfert de progression (QR code, lien 418 caractères, import manuel sur PC), fusion des records
+- **v12** — Mise en page téléphone en paysage, manettes (Xbox / PlayStation / générique)
+- **v11** — numéro de version affiché en bas du menu, mis à jour à chaque livraison
+- **v10** — PWA installable : manifeste, service worker (cache `cloture-v2`), bouton 📲, icônes facture-tampon €
+- **v9 et avant** — jeu 3D autonome (three.js r147 + Fredoka intégrés), défis entre collègues, épreuves comptables, image de partage WhatsApp
